@@ -162,48 +162,48 @@ text = st.text_area(
 # EXAMPLES
 # =========================================================
 
-st.markdown("### 💡 Try an Example")
+#st.markdown("### 💡 Try an Example")
 
-col1, col2, col3 = st.columns(3)
+#col1, col2, col3 = st.columns(3)
 
-with col1:
+#with col1:
 
-    if st.button(
-        "😊 Positive",
-        use_container_width=True
-    ):
+ #   if st.button(
+   #     "😊 Positive",
+   #     use_container_width=True
+  #  ):
 
-        text = (
-            "I absolutely love this product! "
-            "It is amazing and I am very happy with it."
+   #     text = (
+    #        "I absolutely love this product! "
+     #       "It is amazing and I am very happy with it."
+     #   )
+
+
+#with col2:
+
+   # if st.button(
+     #   "😞 Negative",
+     #   use_container_width=True
+  #  ):
+
+      #  text = (
+      #      "I am extremely disappointed with this product. "
+      ##      "The quality is terrible."
         )
+#
+
+#with col3:
+
+  #  if st.button(
+   #     "😐 Neutral",
+      #  use_container_width=True
+  #  ):
+
+   #     # This example was tested against your actual model
+     #   text = "The service was average."
 
 
-with col2:
-
-    if st.button(
-        "😞 Negative",
-        use_container_width=True
-    ):
-
-        text = (
-            "I am extremely disappointed with this product. "
-            "The quality is terrible."
-        )
-
-
-with col3:
-
-    if st.button(
-        "😐 Neutral",
-        use_container_width=True
-    ):
-
-        # This example was tested against your actual model
-        text = "The service was average."
-
-
-st.markdown("</div>", unsafe_allow_html=True)
+#st.markdown("</div>", unsafe_allow_html=True)
 
 
 # =========================================================
@@ -482,6 +482,57 @@ if st.button(
                 "😊 Positive",
                 f"{score_dict.get('Positive', 0):.3f}"
             )
+
+
+        # =================================================
+        # CLASS PROBABILITIES
+        # =================================================
+
+        # Softmax of the decision scores (already computed above
+        # as confidence_scores, in the same order as model.classes_).
+        # These are relative probabilities, not calibrated ones.
+
+        prob_dict = {
+            str(classes[i]): float(confidence_scores[i])
+            for i in range(len(classes))
+        }
+
+        st.markdown("### 🎲 Class Probabilities")
+
+        prob_col1, prob_col2, prob_col3 = st.columns(3)
+
+        with prob_col1:
+
+            p_neg = prob_dict.get("Negative", 0)
+
+            st.metric(
+                "😞 Negative",
+                f"{p_neg * 100:.2f}%"
+            )
+
+            st.progress(min(max(p_neg, 0.0), 1.0))
+
+        with prob_col2:
+
+            p_neu = prob_dict.get("Neutral", 0)
+
+            st.metric(
+                "😐 Neutral",
+                f"{p_neu * 100:.2f}%"
+            )
+
+            st.progress(min(max(p_neu, 0.0), 1.0))
+
+        with prob_col3:
+
+            p_pos = prob_dict.get("Positive", 0)
+
+            st.metric(
+                "😊 Positive",
+                f"{p_pos * 100:.2f}%"
+            )
+
+            st.progress(min(max(p_pos, 0.0), 1.0))
 
 
         # =================================================
